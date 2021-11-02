@@ -2,12 +2,24 @@
 const AWS = require("aws-sdk");
 const fs = require('fs');
 
+require('dotenv').config()
+
 // create the interface with DynamoDB
 // DocumentClient() class offers a level of abstraction that enables us to use JavaScript objects as arguments and return native JavaScript types
+module.exports = function(customENV){ return function(req, res) {
+    //get ENV variables
+    const AWS_KEY_ID = customENV.access_key;
+    const AWS_SECRET_KEY = customENV.secret_access_key;
+    const AWS_REGION = customENV.s3_region;
+
+// modify the AWS config object that DynamoDB uses to connect
 AWS.config.update({
-    region: "us-east-2",
+    region: AWS_REGION,
+    accessKeyId: AWS_KEY_ID,
+    secretAccessKey: AWS_SECRET_KEY,
     endpoint: "http://localhost:8000"
   });
+}};
   const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 
 // use fs package to read the users.json file and assign to allUsers constant
