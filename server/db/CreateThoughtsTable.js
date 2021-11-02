@@ -1,11 +1,22 @@
 // import aws-sdk package
 const AWS = require('aws-sdk');
 
+require('dotenv').config()
+
+module.exports = function(customENV){ return function(req, res) {
+    //get ENV variables
+    const AWS_KEY_ID = customENV.access_key;
+    const AWS_SECRET_KEY = customENV.secret_access_key;
+    const AWS_REGION = customENV.s3_region;
+
 // modify the AWS config object that DynamoDB uses to connect
 AWS.config.update({
-    region: "us-east-2",
+    region: AWS_REGION,
+    accessKeyId: AWS_KEY_ID,
+    secretAccessKey: AWS_SECRET_KEY,
     endpoint: "http://localhost:8000"
   });
+}};
 
 // create the DynamoDB service object
 const dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
